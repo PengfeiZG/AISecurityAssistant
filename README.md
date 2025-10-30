@@ -178,7 +178,7 @@ Otherwise, each user enters their own API key in the frontend.
 
 ## 🧑‍💻 Author
 
-Developed by [Your Name](https://github.com/PengfeiZG)  
+Developed by Pengfei Zhang  
 Senior Cybersecurity Student @ Penn State University  
 Focused on AI-driven security automation and risk analysis.
 
