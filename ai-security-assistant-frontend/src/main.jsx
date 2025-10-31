@@ -1,6 +1,6 @@
 import React from 'react'
 import ReactDOM from 'react-dom/client'
-import AISecurityCoachApp from './AISecurityCoachApp.jsx'
+import AISecurityCoachApp from './AISecurityAssistantApp.jsx'
 import './index.css'
 import 'bootstrap/dist/css/bootstrap.min.css';
 

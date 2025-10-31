@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect } from "react";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 
@@ -9,32 +9,15 @@ export default function AISecurityCoachApp() {
   const [input, setInput] = useState("");
   const [apiKey, setApiKey] = useState(localStorage.getItem("user_api_key") || "");
 
-  const chatEndRef = useRef(null);
-
-  // ✅ Auto-scroll to bottom when messages change
+  // Load list of sessions on startup
   useEffect(() => {
-    chatEndRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, [messages]);
-
-  // ✅ Refresh session list
-  async function refreshSessions() {
-    try {
-      const res = await fetch("http://localhost:8000/sessions");
-      const data = await res.json();
-      // sort by created_at descending (most recent first)
-      const sorted = data.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
-      setSessions(sorted);
-    } catch (err) {
-      console.error("Error loading sessions:", err);
-    }
-  }
-
-  // Load sessions on startup
-  useEffect(() => {
-    refreshSessions();
+    fetch("http://localhost:8000/sessions")
+      .then((res) => res.json())
+      .then(setSessions)
+      .catch((err) => console.error("Error loading sessions:", err));
   }, []);
 
-  // ✅ Load all messages for a selected session
+  // Load messages for a specific session
   async function loadSession(id) {
     setActiveSession(id);
     const res = await fetch(`http://localhost:8000/sessions/${id}`);
@@ -42,7 +25,7 @@ export default function AISecurityCoachApp() {
     setMessages(data);
   }
 
-  // ✅ Create a new session
+  // Create a new session
   async function startNewChat() {
     const res = await fetch("http://localhost:8000/sessions/new", { method: "POST" });
     const data = await res.json();
@@ -51,55 +34,58 @@ export default function AISecurityCoachApp() {
     setSessions((prev) => [data, ...prev]);
   }
 
-  // ✅ Send a message
-  async function sendMessage() {
-    if (!input.trim()) return;
-    if (!apiKey.trim()) {
-      alert("Please enter your OpenAI API key first.");
-      return;
-    }
-
-    let sid = activeSession;
-    if (!sid) {
-      // create new session if none active
-      const res = await fetch("http://localhost:8000/sessions/new", { method: "POST" });
-      const data = await res.json();
-      sid = data.session_id;
-      setActiveSession(sid);
-      setSessions((prev) => [data, ...prev]);
-    }
-
-    const userMsg = { role: "user", content: input };
-    setMessages((m) => [...m, userMsg]);
-    setInput("");
-
-    try {
-      const res = await fetch("http://localhost:8000/chat", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${apiKey}`,
-        },
-        body: JSON.stringify({ message: input, session_id: sid }),
-      });
-
-      const data = await res.json();
-      setMessages((m) => [...m, { role: "assistant", content: data.answer }]);
-
-      // ✅ Update sidebar titles after chat response
-      await refreshSessions();
-    } catch (e) {
-      setMessages((m) => [...m, { role: "assistant", content: "Error: " + e.message }]);
-    }
+  // Send message
+async function sendMessage() {
+  if (!input.trim()) return;
+  if (!apiKey.trim()) {
+    alert("Please enter your OpenAI API key first.");
+    return;
   }
 
-  // ✅ Save API key locally
+  // if no session, start one
+  let sid = activeSession;
+  if (!sid) {
+    const res = await fetch("http://localhost:8000/sessions/new", { method: "POST" });
+    const data = await res.json();
+    sid = data.session_id;
+    setActiveSession(sid);
+    setSessions((prev) => [data, ...prev]);
+  }
+
+  const userMsg = { role: "user", content: input };
+  setMessages((m) => [...m, userMsg]);
+  setInput("");
+
+  try {
+    const res = await fetch("http://localhost:8000/chat", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${apiKey}`,
+      },
+      body: JSON.stringify({ message: input, session_id: sid }),
+    });
+
+    const data = await res.json();
+    setMessages((m) => [...m, { role: "assistant", content: data.answer }]);
+
+    // ✅ Reload sessions to refresh titles
+    const updatedSessions = await fetch("http://localhost:8000/sessions").then((r) => r.json());
+    setSessions(updatedSessions);
+
+  } catch (e) {
+    setMessages((m) => [...m, { role: "assistant", content: "Error: " + e.message }]);
+  }
+}
+
+
+  // Save API key locally
   function handleApiKeySave() {
     localStorage.setItem("user_api_key", apiKey);
     alert("API key saved locally.");
   }
 
-  // ✅ Send on Enter key
+  // Handle Enter key
   function onKeyDown(e) {
     if (e.key === "Enter" && !e.shiftKey) {
       e.preventDefault();
@@ -109,7 +95,7 @@ export default function AISecurityCoachApp() {
 
   return (
     <div style={{ display: "flex", height: "100vh", fontFamily: "Arial, sans-serif" }}>
-      {/* --- SIDEBAR --- */}
+      {/* Sidebar */}
       <div
         style={{
           width: "250px",
@@ -150,7 +136,7 @@ export default function AISecurityCoachApp() {
                 background: activeSession === s.id ? "#ddd" : "#fff",
               }}
             >
-              {s.title?.trim() || "New Chat"}
+              {s.title || "New Chat"}
             </div>
           ))}
         </div>
@@ -161,13 +147,7 @@ export default function AISecurityCoachApp() {
             value={apiKey}
             placeholder="Enter OpenAI API key"
             onChange={(e) => setApiKey(e.target.value)}
-            style={{
-              width: "100%",
-              padding: "6px",
-              borderRadius: "6px",
-              marginBottom: "6px",
-              border: "1px solid #ccc",
-            }}
+            style={{ width: "100%", padding: "6px", borderRadius: "6px", marginBottom: "6px" }}
           />
           <button
             onClick={handleApiKeySave}
@@ -186,7 +166,7 @@ export default function AISecurityCoachApp() {
         </div>
       </div>
 
-      {/* --- CHAT WINDOW --- */}
+      {/* Chat Window */}
       <div style={{ flex: 1, display: "flex", flexDirection: "column" }}>
         <div
           style={{
@@ -216,7 +196,6 @@ export default function AISecurityCoachApp() {
               </div>
             ))
           )}
-          <div ref={chatEndRef} />
         </div>
 
         <div style={{ display: "flex", padding: "10px", background: "#f4f4f4" }}>
