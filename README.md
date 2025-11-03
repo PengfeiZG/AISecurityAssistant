@@ -175,6 +175,7 @@ Otherwise, each user enters their own API key in the frontend.
 
 
 ---
+## Basic Error Handling
 | Condition                      | User Message                                                                                                                               |
 | ------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------ |
 | No API key                     | ⚠️ Please enter your OpenAI API key first.                                                                                                 |
