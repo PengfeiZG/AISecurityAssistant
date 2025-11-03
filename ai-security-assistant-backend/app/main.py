@@ -1,7 +1,8 @@
 from fastapi import FastAPI, Request, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from uuid import uuid4
-from openai import OpenAI
+from openai import OpenAI, OpenAIError
+import httpx  # for network-related exceptions
 
 from .schemas import ChatRequest, ChatResponse
 from .prompts import SYSTEM_PROMPT
@@ -37,13 +38,18 @@ def on_startup():
 async def chat(req: ChatRequest, request: Request):
     api_key = request.headers.get("Authorization", "").replace("Bearer ", "").strip()
     if not api_key:
-        raise HTTPException(status_code=401, detail="Missing API key")
+        raise HTTPException(status_code=401, detail="⚠️ Missing API key. Please enter your OpenAI key in the app.")
 
     allowed, _ = is_allowed(req.message)
     if not allowed:
-        raise HTTPException(status_code=400, detail="Message blocked by moderation.")
+        raise HTTPException(status_code=400, detail="⚠️ Message blocked by moderation policy.")
 
-    client = OpenAI(api_key=api_key)
+    # ✅ Initialize OpenAI client safely
+    try:
+        client = OpenAI(api_key=api_key)
+    except Exception:
+        raise HTTPException(status_code=400, detail="⚠️ Invalid API key format or client setup error.")
+
     session_id = req.session_id or "default"
 
     # ✅ Auto-create session if not yet in DB
@@ -51,7 +57,7 @@ async def chat(req: ChatRequest, request: Request):
     if session_id not in existing_sessions:
         create_session(session_id, "New Chat")
 
-    # --- Generate a short descriptive title for first message ---
+    # --- Generate short title for first message ---
     from .db import get_messages
     previous_msgs = get_messages(session_id)
     if len(previous_msgs) == 0:
@@ -69,15 +75,37 @@ async def chat(req: ChatRequest, request: Request):
         except Exception as e:
             print("⚠️ Title generation failed:", e)
 
-    # --- Call your chat logic ---
-    result = run_chat(req.message, SYSTEM_PROMPT, client)
+    # --- Call OpenAI safely ---
+    try:
+        result = run_chat(req.message, SYSTEM_PROMPT, client)
+    except OpenAIError as e:
+        error_msg = str(e)
+
+        # Simplify the message for known bad-key errors
+        if "Incorrect API key provided" in error_msg:
+            clean_msg = (
+                "⚠️ Invalid API key. Please check your key at "
+                "https://platform.openai.com/account/api-keys."
+            )
+        elif "401" in error_msg:
+            clean_msg = "⚠️ Unauthorized. Your API key is incorrect or expired."
+        elif "429" in error_msg:
+            clean_msg = "⚠️ Too many requests. Please wait a moment and try again."
+        else:
+            # Fallback generic message for any other OpenAI API issues
+            clean_msg = "⚠️ OpenAI API error. Please try again later."
+
+        raise HTTPException(status_code=502, detail=clean_msg)
+    except httpx.ConnectError:
+        raise HTTPException(status_code=503, detail="🚫 Network error: Unable to reach OpenAI API.")
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"⚠️ Unexpected error: {str(e)}")
 
     # --- Save both messages ---
     save_message(session_id, "user", req.message)
     save_message(session_id, "assistant", result["answer"])
 
     return ChatResponse(**result)
-
 
 
 # --- SESSION MANAGEMENT ENDPOINTS ---

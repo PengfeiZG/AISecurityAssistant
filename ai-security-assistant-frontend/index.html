@@ -4,9 +4,32 @@
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/vite.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>ai-security-coach-frontend</title>
+    <title>AI Security Assistant</title>
   </head>
   <body>
+    <!-- Fallback for users who have JavaScript disabled -->
+    <noscript>
+      <div style="
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        height: 100vh;
+        background-color: #f5f5f5;
+        color: #333;
+        font-family: Arial, sans-serif;
+        text-align: center;
+        padding: 20px;
+      ">
+        <h1>AI Security Assistant Unavailable</h1>
+        <p>
+          JavaScript is required for this application to run.
+          Please enable JavaScript in your browser settings and reload the page.
+        </p>
+      </div>
+    </noscript>
+
+    <!-- React root element -->
     <div id="root"></div>
     <script type="module" src="/src/main.jsx"></script>
   </body>
