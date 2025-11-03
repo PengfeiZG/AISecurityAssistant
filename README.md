@@ -175,6 +175,15 @@ Otherwise, each user enters their own API key in the frontend.
 
 
 ---
+| Condition                      | User Message                                                                                                                               |
+| ------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------ |
+| No API key                     | ⚠️ Please enter your OpenAI API key first.                                                                                                 |
+| Offline (before sending)       | 🚫 You appear to be offline. Please reconnect and try again.                                                                               |
+| Invalid API key (from backend) | ⚠️ Invalid API key. Please check your key at [https://platform.openai.com/account/api-keys](https://platform.openai.com/account/api-keys). |
+| Network or backend unreachable | 🚫 Network error: Unable to reach backend or internet connection lost.                                                                     |
+| Other backend issues           | ⚠️ OpenAI API error. Please try again later.                                                                                               |
+
+---
 
 ## 🧑‍💻 Author
 
