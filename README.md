@@ -1,11 +1,11 @@
-# 🧠 AI Security Assistant
+# AI Security Assistant
 
 AI Security Assistant is a web-based cybersecurity assistant built with **FastAPI** and **React (Vite)**.  
 It uses the **OpenAI API** to help users understand and troubleshoot cybersecurity topics — from phishing prevention to network security and configuration advice.
 
 ---
 
-## 📦 Features
+## Features
 
 - Interactive AI chat interface
 - User-provided OpenAI API key (stored locally)
@@ -16,7 +16,7 @@ It uses the **OpenAI API** to help users understand and troubleshoot cybersecuri
 
 ---
 
-## 🧰 Tech Stack
+## Tech Stack
 
 | Layer | Technology |
 |--------|-------------|
@@ -28,7 +28,7 @@ It uses the **OpenAI API** to help users understand and troubleshoot cybersecuri
 
 ---
 
-## ⚙️ Installation
+## Installation
 
 ### 1️⃣ Clone the repository
 
@@ -39,14 +39,14 @@ cd AISecurityAssistant
 
 ---
 
-## 🧩 Backend Setup (FastAPI)
+## Backend Setup (FastAPI)
 
-### 📁 Folder
+### Folder
 ```
 ai-security-assistant-backend/
 ```
 
-### 🐍 Install dependencies
+### Install dependencies
 Make sure you have Python 3.10+ and pip installed, then run:
 
 ```bash
@@ -54,7 +54,7 @@ cd ai-security-assistant-backend
 pip install -r requirements.txt
 ```
 
-### 📋 Dependencies
+### Dependencies
 Listed in `requirements.txt`:
 
 ```
@@ -67,7 +67,7 @@ dnspython
 python-dotenv
 ```
 
-### ▶️ Start the backend server
+### Start the backend server
 ```bash
 uvicorn app.main:app --reload
 ```
@@ -77,14 +77,14 @@ This will start the backend on:
 
 ---
 
-## 💻 Frontend Setup (React + Vite)
+## Frontend Setup (React + Vite)
 
-### 📁 Folder
+### Folder
 ```
 ai-security-assistant-frontend/
 ```
 
-### 📦 Install dependencies
+### Install dependencies
 Make sure Node.js ≥ 18 and npm ≥ 9 are installed, then run:
 
 ```bash
@@ -93,7 +93,7 @@ npm install
 npm install react-markdown remark-gfm
 ```
 
-### ▶️ Start the development server
+### Start the development server
 ```bash
 npm run dev
 ```
@@ -103,7 +103,7 @@ This will start the frontend on:
 
 ---
 
-## 🚀 How to Use
+## How to Use
 
 1. Run the backend (FastAPI) with `uvicorn`.
 2. Run the frontend (React) with `npm run dev`.
@@ -116,7 +116,7 @@ This will start the frontend on:
 
 ---
 
-## 🧠 Example Questions
+## Example Questions
 
 - How can I secure my home Wi-Fi network?  
 - What is the difference between symmetric and asymmetric encryption?  
@@ -125,7 +125,7 @@ This will start the frontend on:
 
 ---
 
-## ⚡ Project Structure
+## Project Structure
 
 ```
 ai-security-assistant/
@@ -150,7 +150,7 @@ ai-security-assistant/
 
 ---
 
-## 🔑 Environment Variables
+## Environment Variables
 
 ### (Optional)
 If you want moderation to work server-side, set your own OpenAI key in the backend:
@@ -163,7 +163,7 @@ Otherwise, each user enters their own API key in the frontend.
 
 ---
 
-## 🧩 Common Commands
+## Common Commands
 
 | Action | Command |
 |--------|----------|
@@ -175,8 +175,18 @@ Otherwise, each user enters their own API key in the frontend.
 
 
 ---
+## Basic Error Handling
+| Condition                      | User Message                                                                                                                               |
+| ------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------ |
+| No API key                     | ⚠️ Please enter your OpenAI API key first.                                                                                                 |
+| Offline (before sending)       | 🚫 You appear to be offline. Please reconnect and try again.                                                                               |
+| Invalid API key (from backend) | ⚠️ Invalid API key. Please check your key at [https://platform.openai.com/account/api-keys](https://platform.openai.com/account/api-keys). |
+| Network or backend unreachable | 🚫 Network error: Unable to reach backend or internet connection lost.                                                                     |
+| Other backend issues           | ⚠️ OpenAI API error. Please try again later.                                                                                               |
 
-## 🧑‍💻 Author
+---
+
+## Author
 
 Developed by Pengfei Zhang  
 Senior Cybersecurity Student @ Penn State University  
