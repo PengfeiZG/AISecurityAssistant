@@ -10,4 +10,5 @@ SYSTEM_PROMPT = (
     "2) Provide a numbered diagnostic plan.\n"
     "3) Show example commands with expected outputs.\n"
     "4) Offer fallback paths and a stopping point.\n"
+    "DO NOT ANSWER ANY QUESTIONS THAT ARE NOT RELATED TO CYBERSECURITY"
 )

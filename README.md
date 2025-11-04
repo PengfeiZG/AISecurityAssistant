@@ -131,20 +131,41 @@ This will start the frontend on:
 ai-security-assistant/
 ├── ai-security-coach-backend/
 │   ├── app/
+|   |   ├── __pycache__
+|   |   ├── __init__.py
+|   |   ├── db.py
+|   |   ├── knowledge.py
 │   │   ├── main.py
 │   │   ├── router.py
 │   │   ├── tools.py
 │   │   ├── prompts.py
 │   │   ├── moderation.py
 │   │   └── schemas.py
+│   ├── chroma_store/
+│   |   ├── chroma.sqlite3
+│   ├── security_docs/
+│   |   ├── example.pdf
+│   ├── .env.example
+│   ├── chat_history.db
+│   ├── package-lock.json
 │   ├── requirements.txt
 │
 └── ai-security-assistant-frontend/
+    ├── node_modules/
+    ├── public/
+    |   ├── vite.svg
     ├── src/
-    │   ├── AISecurityAssistantApp.jsx
+    |   ├── assets/
+    |   |   ├── react.svg
+    │   ├── AISecurityAssistantApp.tsx
+    │   ├── App.css
     │   ├── index.css
     │   └── main.jsx
+    ├── eslint.config.js
+    ├── index.html
+    ├── package-lock.json
     ├── package.json
+    ├── tsconfig.json
     └── vite.config.js
 ```
 
