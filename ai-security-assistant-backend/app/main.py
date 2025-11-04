@@ -3,6 +3,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from uuid import uuid4
 from openai import OpenAI, OpenAIError
 import httpx  # for network-related exceptions
+from fastapi import status
 
 from .schemas import ChatRequest, ChatResponse
 from .prompts import SYSTEM_PROMPT
@@ -132,6 +133,26 @@ def get_session_messages(session_id: str):
     msgs = get_messages(session_id)
     return [{"role": m.role, "content": m.content, "timestamp": m.timestamp} for m in msgs]
 
+@app.delete("/sessions/{session_id}", status_code=status.HTTP_204_NO_CONTENT)
+def delete_session(session_id: str):
+    """Delete a chat session and its messages."""
+    from sqlmodel import Session, select
+    from .db import engine, ChatSession, ChatMessage
+
+    with Session(engine) as s:
+        # Delete messages first
+        msgs = s.exec(select(ChatMessage).where(ChatMessage.session_id == session_id)).all()
+        for m in msgs:
+            s.delete(m)
+
+        # Delete the session itself
+        sess = s.exec(select(ChatSession).where(ChatSession.id == session_id)).first()
+        if not sess:
+            raise HTTPException(status_code=404, detail="Session not found.")
+        s.delete(sess)
+        s.commit()
+
+    return
 
 # --- ROOT ---
 @app.get("/")

@@ -197,18 +197,52 @@ export default function AISecurityCoachApp() {
           {sessions.map((s) => (
             <div
               key={s.id}
-              onClick={() => loadSession(s.id)}
               style={{
+                display: "flex",
+                justifyContent: "space-between",
+                alignItems: "center",
                 padding: "8px",
                 marginBottom: "6px",
                 borderRadius: "6px",
-                cursor: "pointer",
                 background: activeSession === s.id ? "#ddd" : "#fff",
+                cursor: "pointer",
               }}
             >
-              {s.title?.trim() || "New Chat"}
+              {/* Click title to load chat */}
+              <div onClick={() => loadSession(s.id)} style={{ flex: 1, overflow: "hidden" }}>
+                {s.title?.trim() || "New Chat"}
+              </div>
+
+              {/* Delete button */}
+              <button
+                onClick={async (e) => {
+                  e.stopPropagation(); // prevent triggering loadSession
+                  if (!window.confirm(`Delete "${s.title}"? This cannot be undone.`)) return;
+
+                  await fetch(`http://localhost:8000/sessions/${s.id}`, {
+                    method: "DELETE",
+                  });
+                  await refreshSessions();
+                  if (activeSession === s.id) {
+                    setMessages([]);
+                    setActiveSession(null);
+                  }
+                }}
+                style={{
+                  marginLeft: "6px",
+                  background: "transparent",
+                  border: "none",
+                  color: "#c00",
+                  fontWeight: "bold",
+                  cursor: "pointer",
+                }}
+                title="Delete this chat"
+              >
+                ✕
+              </button>
             </div>
           ))}
+
         </div>
 
         <div>
@@ -278,9 +312,9 @@ export default function AISecurityCoachApp() {
         cursor: "pointer",
       }}
     >
-      ☰ {sidebarOpen ? "Hide" : "Chats"}
+      ☰ {sidebarOpen ? "" : "Chats"}
     </button>
-    <span style={{ fontSize: "14px", opacity: 0.8 }}>AI Security Coach</span>
+    <span style={{ fontSize: "14px", opacity: 0.8 }}>AI Security Assistant</span>
   </div>
 
   {/* --- Chat Messages --- */}
@@ -300,18 +334,52 @@ export default function AISecurityCoachApp() {
         <div
           key={i}
           style={{
+            display: "flex",
+            flexDirection: m.role === "assistant" ? "row" : "row-reverse",
+            alignItems: "flex-start",
             margin: "10px 0",
-            background: m.role === "assistant" ? "#f2f2f2" : "#e1e1e1",
-            borderRadius: "10px",
-            padding: "10px",
-            alignSelf: m.role === "assistant" ? "flex-start" : "flex-end",
-            maxWidth: "80%",
           }}
         >
-          <ReactMarkdown remarkPlugins={[remarkGfm]}>{m.content}</ReactMarkdown>
+          {/* Avatar */}
+          <div
+            style={{
+              width: "32px",
+              height: "32px",
+              borderRadius: "50%",
+              background: m.role === "assistant" ? "#007bff" : "#444",
+              color: "white",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              fontWeight: "bold",
+              marginLeft: m.role === "assistant" ? "0" : "8px",
+              marginRight: m.role === "assistant" ? "8px" : "0",
+            }}
+          >
+            {m.role === "assistant" ? "AI" : "U"}
+          </div>
+
+          {/* Message Bubble */}
+          <div
+            style={{
+              background: m.role === "assistant" ? "#e8f1ff" : "#d9fdd3",
+              border: m.role === "assistant" ? "1px solid #b0d1ff" : "1px solid #aee5a3",
+              borderRadius:
+                m.role === "assistant"
+                  ? "10px 10px 10px 2px"
+                  : "10px 10px 2px 10px",
+              padding: "10px",
+              maxWidth: "75%",
+              wordWrap: "break-word",
+              boxShadow: "0 1px 2px rgba(0,0,0,0.1)",
+            }}
+          >
+            <ReactMarkdown remarkPlugins={[remarkGfm]}>{m.content}</ReactMarkdown>
+          </div>
         </div>
       ))
     )}
+
     <div ref={chatEndRef} />
   </div>
 
