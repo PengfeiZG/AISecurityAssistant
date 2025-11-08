@@ -56,7 +56,7 @@ pip install -r requirements.txt
 
 ### Dependencies
 Listed in `requirements.txt`:
-
+pip install -r requirements.txt
 ```
 fastapi
 uvicorn
