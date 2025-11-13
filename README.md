@@ -34,7 +34,6 @@ It uses the **OpenAI API** to help users understand and troubleshoot cybersecuri
 
 ```bash
 git clone https://github.com/PengfeiZG/AISecurityAssistant.git
-cd AISecurityAssistant
 ```
 
 ---
