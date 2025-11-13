@@ -19,7 +19,7 @@ It uses the **OpenAI API** to help users understand and troubleshoot cybersecuri
 
 | Layer | Technology |
 |--------|-------------|
-| Frontend | React (Vite), React Markdown, Remark GFM |
+| Frontend | React (Vite), React Markdown, Node.js |
 | Backend | FastAPI, Uvicorn, OpenAI Python SDK |
 | Language | Python 3.10+ |
 | API | OpenAI Responses API |
