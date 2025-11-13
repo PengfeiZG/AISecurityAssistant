@@ -84,8 +84,10 @@ ai-security-assistant-frontend/
 ```
 
 ### Install dependencies
-Make sure Node.js ≥ 18 and npm ≥ 9 are installed, then run:
-https://nodejs.org/en/download
+Make sure Node.js ≥ 18 and npm ≥ 9 are installed(https://nodejs.org/en/download), 
+If you see _"'npm' is not recognized as an internal or external command, operable program or file_". Put C:/Users/Program Files/nodejs/ in enviornment variables. Enter in windows search bar "Edit the system enviornment variables" > Enviornment Variables > New > Variable name: nodejs | Variable value: C:/Users/Program Files/nodejs/. Reopen CMD.
+then run:
+
 
 ```bash
 cd ai-security-assistant-frontend
