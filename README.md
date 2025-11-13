@@ -30,7 +30,7 @@ It uses the **OpenAI API** to help users understand and troubleshoot cybersecuri
 
 ## Installation
 
-### 1️⃣ Clone the repository
+### 1️⃣ Clone the repository or Download ZIP File
 
 ```bash
 git clone https://github.com/PengfeiZG/AISecurityAssistant.git
