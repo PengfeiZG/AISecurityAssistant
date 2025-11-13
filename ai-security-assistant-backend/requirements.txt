@@ -5,3 +5,4 @@ httpx
 openai>=1.52.0
 dnspython
 python-dotenv
+sqlmodel
