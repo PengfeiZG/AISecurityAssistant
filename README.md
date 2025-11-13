@@ -9,7 +9,6 @@ It uses the **OpenAI API** to help users understand and troubleshoot cybersecuri
 
 - Interactive AI chat interface
 - User-provided OpenAI API key (stored locally)
-- Markdown-formatted responses with code blocks and copy buttons
 - FastAPI backend for request handling
 - React frontend built with Vite
 - Simple plain CSS styling (no Tailwind)
