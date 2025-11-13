@@ -106,7 +106,7 @@ This will start the frontend on:
 
 ## How to Use
 
-1. Run the backend (FastAPI) with `uvicorn`.
+1. Run the backend (FastAPI) with `uvicorn app.main:app --reload`.
 2. Run the frontend (React) with `npm run dev`.
 3. Open your browser and go to:
    ```
