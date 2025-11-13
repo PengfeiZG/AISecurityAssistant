@@ -85,6 +85,7 @@ ai-security-assistant-frontend/
 
 ### Install dependencies
 Make sure Node.js ≥ 18 and npm ≥ 9 are installed, then run:
+https://nodejs.org/en/download
 
 ```bash
 cd ai-security-assistant-frontend
