@@ -211,6 +211,6 @@ Otherwise, each user enters their own API key in the frontend.
 ## Author
 
 Developed by Pengfei Zhang  
-Senior Cybersecurity Student @ Penn State University  
+Master's Cybersecurity Student @ Penn State University  
 Focused on AI-driven security automation and risk analysis.
 
